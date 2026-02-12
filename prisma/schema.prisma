@@ -1,0 +1,270 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // Use a dedicated Neon connection string env var so we don't collide with any OS-level DATABASE_URL
+  url      = env("NEON_DATABASE_URL")
+}
+
+model User {
+  id                        String    @id @default(cuid())
+  email                     String    @unique @db.VarChar(255)
+  password_hash             String    @db.VarChar(255)
+  name                      String    @db.VarChar(255)
+  role                      UserRole  @default(user)
+  is_active                 Boolean   @default(true)
+  is_verified                Boolean   @default(false)
+  otp_hash                  String?   @db.VarChar(255)
+  otp_expiry                DateTime?
+  verification_token        String?   @db.VarChar(255)
+  verification_token_expiry DateTime?
+  created_at                DateTime  @default(now())
+  updated_at                DateTime  @updatedAt
+
+  orders       Order[]
+  cart_items   CartItem[]
+  wishlist_items WishlistItem[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  admin
+  manager
+  user
+}
+
+model Category {
+  id         String    @id @default(cuid())
+  name       String    @db.VarChar(255)
+  slug       String    @unique @db.VarChar(255)
+  is_active  Boolean   @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Occasion {
+  id         String    @id @default(cuid())
+  name       String    @db.VarChar(255)
+  slug       String    @unique @db.VarChar(255)
+  is_active  Boolean   @default(true)
+  images     String?   @default("")
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  products Product[]
+
+  @@map("occasions")
+}
+
+model Product {
+  id              String        @id @default(cuid())
+  name            String        @db.VarChar(255)
+  price           Float
+  category_id     String?
+  slug            String        @db.VarChar(255)
+  description     String?       @db.Text
+  colour          String?       @db.VarChar(100)
+  size            ProductSize?
+  delivery        DeliveryType  @default(on_delivery)
+  premium         Boolean       @default(false)
+  badge           ProductBadge?
+  image           String?       @db.Text
+  images          String[]      @default([])
+  stock           Int           @default(0)
+  tags            String[]      @default([])
+  ratings         Float?
+  seo_title       String?       @db.VarChar(255)
+  seo_description String?       @db.Text
+  gender          GenderType?
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+
+  category        Category?     @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  occasions       Occasion[]
+  order_items     OrderItem[]
+  cart_items      CartItem[]
+  wishlist_items  WishlistItem[]
+
+  @@index([category_id])
+  @@index([slug])
+  @@index([badge])
+  @@map("products")
+}
+
+enum ProductSize {
+  XS
+  S
+  M
+  L
+  XL
+  XXL
+}
+
+enum DeliveryType {
+  night_time
+  on_delivery
+  same_day
+  express
+}
+
+enum ProductBadge {
+  top_selling
+  new_arrival
+  featured
+}
+
+enum GenderType {
+  her
+  him
+  both
+  female
+  male
+  unisex
+}
+
+model Order {
+  id                String            @id @default(cuid())
+  user_id           String
+  total_amount      Float
+  payment_status    PaymentStatus      @default(pending)
+  order_status      OrderStatus       @default(pending)
+  payment_intent_id String?           @db.VarChar(255)
+  
+  billing_full_name   String?  @db.VarChar(255)
+  billing_email       String?  @db.VarChar(255)
+  billing_phone       String?  @db.VarChar(50)
+  billing_address_line1 String? @db.VarChar(255)
+  billing_address_line2 String? @db.VarChar(255)
+  billing_city        String?  @db.VarChar(100)
+  billing_state       String?  @db.VarChar(100)
+  billing_postal_code String?  @db.VarChar(20)
+  billing_country     String?  @db.VarChar(100)
+
+  shipping_full_name   String?  @db.VarChar(255)
+  shipping_email       String?  @db.VarChar(255)
+  shipping_phone       String?  @db.VarChar(50)
+  shipping_address_line1 String? @db.VarChar(255)
+  shipping_address_line2 String? @db.VarChar(255)
+  shipping_city        String?  @db.VarChar(100)
+  shipping_state       String?  @db.VarChar(100)
+  shipping_postal_code String?  @db.VarChar(20)
+  shipping_country     String?  @db.VarChar(100)
+
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  user       User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  items      OrderItem[]
+
+  @@index([user_id])
+  @@index([payment_status])
+  @@index([order_status])
+  @@index([created_at])
+  @@map("orders")
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+  refunded
+}
+
+enum OrderStatus {
+  pending
+  processing
+  delivered
+  cancelled
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  order_id    String
+  product_id  String
+  name        String   @db.VarChar(255)
+  price       Float
+  quantity    Int
+  image       String?  @db.Text
+  slug        String?  @db.VarChar(255)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  order   Order   @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  @@index([order_id])
+  @@index([product_id])
+  @@map("order_items")
+}
+
+model CartItem {
+  id         String   @id @default(cuid())
+  user_id    String
+  product_id String
+  quantity   Int      @default(1)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, product_id])
+  @@index([user_id])
+  @@index([product_id])
+  @@map("cart_items")
+}
+
+model WishlistItem {
+  id         String   @id @default(cuid())
+  user_id    String
+  product_id String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, product_id])
+  @@index([user_id])
+  @@index([product_id])
+  @@map("wishlist_items")
+}
+
+model Blog {
+  id              String        @id @default(cuid())
+  title           String        @db.VarChar(255)
+  slug            String        @unique @db.VarChar(255)
+  content         String        @db.Text
+  image           String?       @db.Text
+  seo_title       String?       @db.VarChar(255)
+  seo_description String?       @db.Text
+  tags            String[]      @default([])
+  status          BlogStatus    @default(published)
+  author          String        @default("Aoroma Flowers") @db.VarChar(255)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+
+  @@index([slug])
+  @@index([status])
+  @@map("blogs")
+}
+
+enum BlogStatus {
+  published
+  draft
+  archived
+}
+
+
+
+
