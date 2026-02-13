@@ -32,17 +32,26 @@ export const callPrivateApi = async (endpoint, method, payload, token) => {
     const data = text ? JSON.parse(text) : {};
 
     if (!response.ok) {
-      throw { 
-        success: false, 
+      const errObj = {
+        success: false,
         message: data?.message || data?.error || `HTTP ${response.status} Error`,
-        status: response.status
+        status: response.status,
       };
+      console.error("callPrivateApi response error", errObj);
+      throw errObj;
     }
-    
+
     return data;
   } catch (error) {
+    console.error("callPrivateApi caught", error);
     if (error instanceof SyntaxError) {
+      // likely JSON.parse failure
       throw { success: false, message: 'Invalid response from server' };
+    }
+
+    // make sure any thrown Error/TypeError has a message field
+    if (error && typeof error === 'object' && !('message' in error)) {
+      return Promise.reject({ success: false, message: 'An error occurred', originalError: error });
     }
     throw error;
   }
