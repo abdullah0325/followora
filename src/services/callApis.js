@@ -1,3 +1,5 @@
+// Default to localhost for development
+// On Vercel, set NEXT_PUBLIC_API_URL to your production URL
 const HOSTNAME = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 // const HOSTNAME = "http://followora-shop.netlify.app/api";
 

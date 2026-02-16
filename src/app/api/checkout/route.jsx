@@ -1,10 +1,56 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth } from "@/lib/middleware/auth";
+import { verifyUser } from "@/lib/auth";
 
 export async function POST(request) {
   try {
-    const user = await requireAuth(request);
+    // Make auth optional - allow guest checkout
+    const { user, error: authError } = await verifyUser(request);
+    
+    // Get cart items - either from logged in user or from request body
+    let cartItems = [];
+    const body = await request.json();
+    const { billing, shipping, contactNumber, cart: cartFromBody } = body;
+
+    if (!billing || !shipping || !contactNumber) {
+      return NextResponse.json(
+        { success: false, message: "Missing checkout data" },
+        { status: 400 }
+      );
+    }
+
+    // If user is logged in, get their cart
+    if (user) {
+      cartItems = await prisma.cartItem.findMany({
+        where: { user_id: user.id },
+        include: {
+          product: true,
+        },
+      });
+    } else if (cartFromBody && Array.isArray(cartFromBody)) {
+      // Guest checkout - get products from cart items in request
+      const productIds = cartFromBody.map(item => item.productId);
+      const products = await prisma.product.findMany({
+        where: { id: { in: productIds } }
+      });
+      
+      cartItems = cartFromBody.map(item => ({
+        quantity: item.quantity,
+        product: products.find(p => p.id === item.productId)
+      })).filter(item => item.product);
+    } else {
+      return NextResponse.json(
+        { success: false, message: "Please login or provide cart items" },
+        { status: 401 }
+      );
+    }
+
+    if (!cartItems.length) {
+      return NextResponse.json(
+        { success: false, message: "Cart is empty" },
+        { status: 400 }
+      );
+    }
 
     const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
     if (!stripeSecretKey) {
@@ -17,23 +63,6 @@ export async function POST(request) {
     const stripe = (await import("stripe")).default(stripeSecretKey);
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
-    const body = await request.json();
-    const { billing, shipping, contactNumber } = body;
-
-    if (!billing || !shipping || !contactNumber) {
-      return NextResponse.json(
-        { success: false, message: "Missing checkout data" },
-        { status: 400 }
-      );
-    }
-
-    const cartItems = await prisma.cartItem.findMany({
-      where: { user_id: user.id },
-      include: {
-        product: true,
-      },
-    });
 
     if (!cartItems.length) {
       return NextResponse.json(
@@ -95,14 +124,15 @@ export async function POST(request) {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
+      customer_email: user ? user.email : billing.email,
       line_items,
       billing_address_collection: "required",
       shipping_address_collection: {
         allowed_countries: ["AE"],
       },
       metadata: {
-        userId: user.id,
-        email: user.email,
+        userId: user ? user.id : 'guest',
+        email: user ? user.email : billing.email,
         contactNumber,
         billing: JSON.stringify(billing),
         shipping: JSON.stringify(shipping),

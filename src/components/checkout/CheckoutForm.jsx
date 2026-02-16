@@ -6,7 +6,7 @@ import { useCart } from '@/hooks/CartContext';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { LoginHeading } from '../ui/Heading';
-import { callPrivateApi } from '@/services/callApis';
+import { callPublicApi } from '@/services/callApis';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -33,13 +33,8 @@ export default function CheckoutPage() {
   const [contactNumber, setContactNumber] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Redirect if user not logged in
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      toast.error('Please login to access checkout');
-      router.push('/auth/login');
-    }
-  }, [authLoading, isAuthenticated, router]);
+  // Guest checkout is allowed - no redirect to login
+  // User info pre-fill only if logged in
 
   // Pre-fill user info
   useEffect(() => {
@@ -158,7 +153,7 @@ export default function CheckoutPage() {
 
 
     try {
-      const data = await callPrivateApi("/checkout", "POST", payload, token)
+      const data = await callPublicApi("/checkout", "POST", payload)
 
 
 
