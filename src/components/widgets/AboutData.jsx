@@ -5,7 +5,7 @@ const AboutData = () => {
   return (
     <div data-aos="zoom-out" className="px-3 sm:px-4 md:px-6">
     <span className="text-pink-600 font-semibold tracking-wide text-xs sm:text-sm md:text-base">
-      About Aroma Follower
+      Followora shop
     </span>
 {/* 
     <h2 className="text-4xl font-bold text-gray-900 dark:text-white mt-3 mb-6 leading-tight">
@@ -13,7 +13,7 @@ const AboutData = () => {
     </h2> */}
  <HeroHeading text1="Where Flowers, Gifts" text2="& Cakes Create Memories"/>
     <p className="text-gray-600 dark:text-gray-400 mb-4 sm:mb-5 md:mb-6 leading-relaxed text-xs sm:text-sm md:text-base">
-      Aroma Follower brings you premium flower bouquets, elegant gift
+      Followora shop brings you premium flower bouquets, elegant gift
       arrangements and delicious cakes to make every moment special.
       Whether it’s love, celebration or surprise — we deliver emotions.
     </p>

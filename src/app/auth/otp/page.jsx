@@ -2,12 +2,12 @@ import OTP from '@/components/auth/OTP';
 import React from 'react';
 
 export const metadata = {
-  title: "Aroma Flowers - Verify OTP",
+  title: "Flowora Shop - Verify OTP",
   description:
-    "Verify your email to complete registration at Aroma Flowers. Fresh flowers, cakes, gifts, and party decorations with delivery across Dubai & UAE.",
+    "Verify your email to complete registration at Flowora Shop. Fresh flowers, cakes, gifts, and party decorations with delivery across Dubai & UAE.",
   keywords: [
     "OTP verification",
-    "Aroma Flowers",
+    "Flowora Shop",
     "flower delivery",
     "Dubai",
     "UAE",
@@ -16,9 +16,9 @@ export const metadata = {
     "cakes",
   ],
   openGraph: {
-    title: "Aroma Flowers - Verify OTP",
+    title: "Flowora Shop - Verify OTP",
     description:
-      "Complete your registration by verifying your email at Aroma Flowers.",
+      "Complete your registration by verifying your email at Flowora Shop.",
     type: "website",
   },
 };

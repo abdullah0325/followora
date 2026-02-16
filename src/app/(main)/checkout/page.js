@@ -4,7 +4,7 @@ import CheckoutForm from '@/components/checkout/CheckoutForm';
 import OrderSummary from '@/components/checkout/OrderSummary';
 
 export const metadata = {
-  title: 'Checkout - Aroma Flowers',
+  title: 'Checkout - Flowora Shop',
   description: 'Complete your order and checkout securely',
 };
 

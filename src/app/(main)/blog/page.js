@@ -2,10 +2,10 @@ import BlogList from '@/components/blogs/BlogList';
 
 export const metadata = {
   title: 'Blog | Followora',
-  description: 'Read our latest blog posts about flowers, gifts, occasions, and more. Stay updated with tips and news from Aroma Flowers.',
+  description: 'Read our latest blog posts about flowers, gifts, occasions, and more. Stay updated with tips and news from Flowora Shop.',
   keywords: ['blog', 'flowers', 'gifts', 'tips', 'news', 'Dubai', 'UAE'],
   openGraph: {
-    title: 'Blog - Aroma Flowers',
+    title: 'Blog - Flowora Shop',
     description: 'Latest news and tips about flowers and gifts',
     type: 'website',
   },

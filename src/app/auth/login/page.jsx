@@ -2,11 +2,11 @@ import Login from '@/components/auth/Login';
 import React from 'react';
 
 export const metadata = {
-  title: "Aroma Flowers - Login",
+  title: "Flowora Shop - Login",
   description:
-    "Login to Aroma Flowers to order fresh flowers, cakes, gifts, and party decorations with fast delivery across Dubai & UAE.",
+    "Login to Flowora Shop to order fresh flowers, cakes, gifts, and party decorations with fast delivery across Dubai & UAE.",
   keywords: [
-    "Aroma Flowers login",
+    "Flowora Shop login",
     "flower delivery Dubai",
     "UAE flower shop",
     "login",
@@ -15,9 +15,9 @@ export const metadata = {
     "midnight delivery",
   ],
   openGraph: {
-    title: "Aroma Flowers - Login",
+    title: "Flowora Shop - Login",
     description:
-      "Login to your Aroma Flowers account and enjoy fresh flowers and gifts delivery across Dubai & UAE.",
+      "Login to your Flowora Shop account and enjoy fresh flowers and gifts delivery across Dubai & UAE.",
     type: "website",
   },
 };

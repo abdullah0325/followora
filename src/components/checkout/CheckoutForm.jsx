@@ -57,27 +57,7 @@ export default function CheckoutPage() {
     }
   }, [user]);
 
-  // Debugging API calls
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const publicRes = await fetch('/api/public-data');
-        const publicData = await publicRes.json();
-        console.log('Public API response:', publicData);
-
-        if (token) {
-          const privateRes = await fetch('/api/user-details', {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const privateData = await privateRes.json();
-          console.log('Private API response:', privateData);
-        }
-      } catch (err) {
-        console.error('API fetch error:', err);
-      }
-    }
-    fetchData();
-  }, [token]);
+  // Handle checkout submission
 
   const calculateSubtotal = () => {
     return cartItems.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);

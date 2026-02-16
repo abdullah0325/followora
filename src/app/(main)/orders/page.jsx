@@ -2,7 +2,7 @@ import MyOrdersTable from '@/components/checkout/MyOrderTable';
 import { LoginHeading } from '@/components/ui/Heading';
 
 export const metadata = {
-  title: 'My Orders - Aroma Flowers',
+  title: 'My Orders - Flowora Shop',
   description: 'View your order history',
 };
 

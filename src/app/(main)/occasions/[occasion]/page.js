@@ -29,11 +29,11 @@ export async function generateMetadata({ params }) {
     .join(' ');
 
   return {
-    title: `${occasionName} Gifts - Aroma Flowers | ${occasionName} Flowers & Gifts in Dubai & UAE`,
+    title: `${occasionName} Gifts - Flowora Shop | ${occasionName} Flowers & Gifts in Dubai & UAE`,
     description: `Find perfect ${occasionName} gifts and flowers in Dubai & UAE. Same-day delivery and midnight delivery available for ${occasionName}.`,
     keywords: [occasionName.toLowerCase(), 'gifts', 'flowers', 'Dubai', 'UAE', occasionName],
     openGraph: {
-      title: `${occasionName} Gifts - Aroma Flowers`,
+      title: `${occasionName} Gifts - Flowora Shop`,
       description: `Perfect ${occasionName} gifts and flowers in Dubai & UAE`,
       type: 'website',
     },

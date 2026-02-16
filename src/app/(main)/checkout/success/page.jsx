@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 import OrderSuccess from '@/components/checkout/OrderSuccess';
 
 export const metadata = {
-  title: 'Order Success - Aroma Flowers',
+  title: 'Order Success - Flowora Shop',
   description: 'Your order has been placed successfully',
 };
 
