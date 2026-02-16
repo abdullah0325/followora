@@ -54,15 +54,41 @@ export async function PUT(request, { params }) {
     const description = body.get('description');
     const colour = body.get('colour') || null;
     const size = body.get('size') || null;
-    const delivery = body.get('delivery') || null;
+    let delivery = body.get('delivery') || null;
     const premium = body.get('premium') === 'true';
     const seo_title = body.get('seo_title') || null;
     const seo_description = body.get('seo_description') || null;
     const gender = body.get('gender') || null;
-    const badge = body.get('badge') || null;
+    let badge = body.get('badge') || null;
     const category = body.get('category') || null;
     const occasionId = body.get('occasions') || null;
     const rating = body.get('rating');
+
+    // Normalize delivery option values to match Prisma enum
+    const deliveryMap = {
+      'same day': 'same_day',
+      'same-day': 'same_day',
+      'on-demand': 'on_delivery',
+      'on-delivery': 'on_delivery',
+      'night-time': 'night_time',
+      'night_time': 'night_time',
+      'express': 'express',
+    };
+    if (delivery) {
+      delivery = deliveryMap[delivery] || delivery;
+    }
+
+    // Normalize badge values to match Prisma enum
+    const badgeMap = {
+      'new-arrival': 'new_arrival',
+      'new_arrival': 'new_arrival',
+      'top-selling': 'top_selling',
+      'top_selling': 'top_selling',
+      'featured': 'featured',
+    };
+    if (badge) {
+      badge = badgeMap[badge] || badge;
+    }
 
     if (isNaN(price) || price < 0) {
       return NextResponse.json({ success: false, message: 'Price must be valid' }, { status: 400 });

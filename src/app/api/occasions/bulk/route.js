@@ -4,7 +4,7 @@ import { verifyAdmin } from "@/lib/auth";
 
 export async function POST(req) {
   try {
-    const { error } = verifyAdmin(req);
+    const { error } = await verifyAdmin(req);
     if (error) return error;
 
     const body = await req.json();

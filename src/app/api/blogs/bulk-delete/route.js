@@ -5,7 +5,7 @@ import { deleteImage, extractPublicId } from "@/lib/cloudinary";
 
 export async function POST(req) {
   try {
-    const { error } = verifyAdmin(req);
+    const { error } = await verifyAdmin(req);
     if (error) return error;
 
     const { ids } = await req.json();

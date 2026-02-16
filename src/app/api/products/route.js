@@ -27,7 +27,7 @@ export async function POST(request) {
     const seo_title = body.get('seo_title');
     const seo_description = body.get('seo_description');
     const gender = body.get('gender');
-    const badge = body.get('badge');
+    let badge = body.get('badge');
     const occasionId = body.get('occasions');
     const rating = body.get('rating');
 
@@ -43,6 +43,18 @@ export async function POST(request) {
     };
     if (delivery) {
       delivery = deliveryMap[delivery] || delivery;
+    }
+
+    // Normalize badge values to match Prisma enum
+    const badgeMap = {
+      'new-arrival': 'new_arrival',
+      'new_arrival': 'new_arrival',
+      'top-selling': 'top_selling',
+      'top_selling': 'top_selling',
+      'featured': 'featured',
+    };
+    if (badge) {
+      badge = badgeMap[badge] || badge;
     }
 
     console.log('Creating product:', { name, price, category, delivery });

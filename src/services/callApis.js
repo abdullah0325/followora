@@ -1,4 +1,4 @@
-const HOSTNAME = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000/api';
+const HOSTNAME = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 // const HOSTNAME = "http://followora-shop.netlify.app/api";
 
 /* ===============================

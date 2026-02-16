@@ -9,7 +9,7 @@ import { verifyAdmin } from "@/lib/auth";
 ========================= */
 export async function PUT(request, { params }) {
   try {
-    const { error } = verifyAdmin(request);
+    const { error } = await verifyAdmin(request);
     if (error) return error;
 
     const { id } = await params;
@@ -92,7 +92,7 @@ export async function PUT(request, { params }) {
 ========================= */
 export async function DELETE(request, { params }) {
   try {
-    const { error } = verifyAdmin(request);
+    const { error } = await verifyAdmin(request);
     if (error) return error;
 
     const { id } = await params;

@@ -14,7 +14,7 @@ import { verifyAdmin } from "@/lib/auth";
  */
 export async function POST(request) {
   try {
-    const { error } = verifyAdmin(request);
+    const { error } = await verifyAdmin(request);
     if (error) return error;
 
     const body = await request.json();
@@ -99,7 +99,7 @@ export async function POST(request) {
  */
 export async function DELETE(request) {
   try {
-    const { error } = verifyAdmin(request);
+    const { error } = await verifyAdmin(request);
     if (error) return error;
 
     const body = await request.json();
